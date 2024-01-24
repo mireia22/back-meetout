@@ -1,5 +1,5 @@
 const { generateToken } = require("../../utils/token");
-const User = require("../models/User-model");
+const User = require("../models/user-model");
 const bcrypt = require("bcrypt");
 const { HttpError } = require("../../middlewares/error-middleware");
 const { isEmailValid } = require("../../utils/validFields");
