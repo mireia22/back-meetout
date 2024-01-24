@@ -1,8 +1,7 @@
 [[headers]]
-  # Define which paths this specific [[headers]] block will cover.
-  for = "/*"
+  for = "/*" # you can configure the correct paths here
   [headers.values]
-  Access-Control-Allow-Origin = "*"
+    access-control-allow-origin: *
 
 [functions]
   external_node_modules = ["express"]
