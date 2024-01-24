@@ -1,8 +1,8 @@
 const express = require("express");
 const dotenv = require("dotenv");
-const { connectToDB } = require("./src/config/db");
-const { mainRouter } = require("./src/api/routes/main-router");
-const { configCloudinary } = require("./src/middlewares/files-middleware");
+const { connectToDB } = require("../src/config/db");
+const { mainRouter } = require("../src/api/routes/main-router");
+const { configCloudinary } = require("../src/middlewares/files-middleware");
 const cors = require("cors");
 const app = express();
 
@@ -13,7 +13,7 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 app.use(
   cors({
-    origin: "http://localhost:5173",
+    origin: ["http://localhost:5173", "https://front-meetout.vercel.app/"],
     allowedHeaders: "Content-Type,Authorization,credentials",
     credentials: true,
   })
