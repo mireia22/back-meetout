@@ -13,10 +13,7 @@ api.use(express.json());
 api.use(express.urlencoded({ extended: false }));
 api.use(
   cors({
-    origin: ["*"],
-    methods: ["GET", "POST", "DELETE"],
-    allowedHeaders: "Content-Type,Authorization,credentials",
-    credentials: true,
+    origin: "*",
   })
 );
 
