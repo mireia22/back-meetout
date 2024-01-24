@@ -13,7 +13,7 @@ api.use(express.json());
 api.use(express.urlencoded({ extended: false }));
 api.use(
   cors({
-    origin: "*",
+    origin: "https://front-meetout.vercel.app/",
   })
 );
 
