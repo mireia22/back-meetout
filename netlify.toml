@@ -1,8 +1,9 @@
 [[headers]]
   # Define which paths this specific [[headers]] block will cover.
-  for = "/api/*"
+  for = "/*"
   [headers.values]
-  Access-Control-Allow-Origin = "https://front-meetout.vercel.app"
+  Access-Control-Allow-Origin = "*"
+
 [functions]
   external_node_modules = ["express"]
   node_bundler = "esbuild"
