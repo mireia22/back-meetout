@@ -20,7 +20,9 @@ app.use(
 );
 
 app.use("/api/v1", mainRouter);
-
+app.use("*", (req, res) => {
+  res.send("Hello world.");
+});
 app.use((err, req, res, next) => {
   const statusCode = err.statusCode || 500;
   const message = err.message || "Internal Server Error";
@@ -32,3 +34,4 @@ app.listen(PORT || 3000, () => {
   connectToDB();
   console.log(`App is listening to port ${PORT} 😉`);
 });
+module.exports = app;
