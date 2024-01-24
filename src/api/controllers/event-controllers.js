@@ -83,6 +83,12 @@ const postEvent = async (req, res, next) => {
     if (!title || !ubication || !difficulty) {
       return next(new HttpError("Complete all fields.", 400));
     }
+    const currentDate = new Date();
+    const eventDate = new Date(date);
+
+    if (eventDate < currentDate) {
+      return next(new HttpError("Event date must be in the future!", 400));
+    }
 
     const newEvent = new Event({
       title,
