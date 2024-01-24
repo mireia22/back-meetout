@@ -1,5 +1,5 @@
 const { deleteImgCloudinary } = require("../../middlewares/files-middleware");
-const User = require("../models/User-model");
+const User = require("../models/user-model");
 const bcrypt = require("bcrypt");
 
 const getAllUsers = async (req, res, next) => {

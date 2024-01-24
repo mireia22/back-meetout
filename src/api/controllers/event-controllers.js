@@ -1,5 +1,5 @@
 const { deleteImgCloudinary } = require("../../middlewares/files-middleware");
-const User = require("../models/User-model");
+const User = require("../models/user-model");
 const Event = require("../models/event-model");
 const Asistant = require("../models/asistant-model");
 const { HttpError } = require("../../middlewares/error-middleware");

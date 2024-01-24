@@ -1,4 +1,4 @@
-const User = require("../models/User-model");
+const User = require("../models/user-model");
 const Asistant = require("../models/asistant-model");
 const Event = require("../models/event-model");
 
