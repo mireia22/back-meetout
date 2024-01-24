@@ -5,7 +5,6 @@ const { mainRouter } = require("./src/api/routes/main-router");
 const { configCloudinary } = require("./src/middlewares/files-middleware");
 const cors = require("cors");
 const api = express();
-const serverless = require("serverless-http");
 
 dotenv.config();
 configCloudinary();
@@ -14,7 +13,7 @@ api.use(express.json());
 api.use(express.urlencoded({ extended: false }));
 api.use(
   cors({
-    origin: ["http://localhost:5173"],
+    origin: ["http://localhost:5173", "https://front-meetout.vercel.app/"],
     allowedHeaders: "Content-Type,Authorization,credentials",
     credentials: true,
   })
@@ -24,7 +23,6 @@ api.use("/api/v1", mainRouter);
 api.use("*", (req, res) => {
   res.send("Hello world.");
 });
-const handler = serverless(api);
 
 api.use((err, req, res, next) => {
   const statusCode = err.statusCode || 500;
@@ -37,4 +35,4 @@ api.listen(PORT || 3000, () => {
   connectToDB();
   console.log(`App is listening to port ${PORT} 😉`);
 });
-module.exports = { api, handler };
+module.exports = { api };
