@@ -21,7 +21,7 @@ const register = async (req, res, next) => {
       name,
       email,
       password,
-      avatar: req.file ? req.file.path : "/front-meetout/assets/avatar.png",
+      avatar: req.file ? req.file.path : "/front-meetout/src/assets/avatar.png",
     });
 
     const savedUser = await newUser.save();
