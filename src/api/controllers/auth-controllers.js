@@ -25,9 +25,10 @@ const register = async (req, res, next) => {
     });
 
     const savedUser = await newUser.save();
+    const token = generateToken(savedUser._id, savedUser.email);
     res
       .status(201)
-      .json({ message: `New user ${savedUser.email} registered.` });
+      .json({ token, message: `New user ${savedUser.email} registered.` });
   } catch (error) {
     return next(error);
   }
