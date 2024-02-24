@@ -4,6 +4,7 @@ const Event = require("../models/event-model");
 const Asistant = require("../models/asistant-model");
 const { HttpError } = require("../../middlewares/error-middleware");
 const { formatDate } = require("../../utils/formatDates");
+const path = require("path");
 
 const getAllEvents = async (req, res, next) => {
   try {
@@ -97,7 +98,7 @@ const postEvent = async (req, res, next) => {
       difficulty,
       sport,
       createdBy: req.user.id,
-      eventImage: req.file ? req.file.path : "no Event image",
+      eventImage: req.file ? req.file.path : "../../../assets/running.jpg",
     });
 
     const savedEvent = await newEvent.save();
