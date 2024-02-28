@@ -73,7 +73,7 @@ const getFilteredEvents = async (req, res, next) => {
 
     return res.status(200).json(filteredEvents);
   } catch (error) {
-    return res.status(400).json({ message: error.message });
+    return next(new HttpError(error));
   }
 };
 
@@ -98,7 +98,9 @@ const postEvent = async (req, res, next) => {
       difficulty,
       sport,
       createdBy: req.user.id,
-      eventImage: req.file ? req.file.path : "../../../assets/running.jpg",
+      eventImage: req.file
+        ? req.file.path
+        : "https://res.cloudinary.com/dwigdvgwe/image/upload/v1709150899/event_it4nmq.jpg",
     });
 
     const savedEvent = await newEvent.save();
@@ -114,7 +116,7 @@ const postEvent = async (req, res, next) => {
     return res.status(201).json({ message: "Posted", savedEvent });
   } catch (error) {
     console.error(error);
-    return res.status(400).json({ message: error.message });
+    return next(new HttpError(error));
   }
 };
 const inscribeToEvent = async (req, res, next) => {
@@ -193,55 +195,38 @@ const inscribeToEvent = async (req, res, next) => {
 const editEvent = async (req, res, next) => {
   try {
     const { eventId } = req.params;
-    console.log("eventId", eventId);
     const { title, ubication, date, sport, difficulty } = req.body;
 
-    console.log("REQBODY", req.body);
     const existingEvent = await Event.findById(eventId);
 
     if (existingEvent?.eventImage && req.file) {
       deleteImgCloudinary(existingEvent.eventImage);
     }
 
-    const updatedFields = {};
-    if (title !== "") {
-      updatedFields.title = title;
-    }
-    if (ubication !== "") {
-      updatedFields.ubication = ubication;
-    }
-    if (difficulty !== "") {
-      updatedFields.difficulty = difficulty;
-    }
+    const updatedFields = {
+      ...(title && { title }),
+      ...(ubication && { ubication }),
+      ...(date && { date }),
+      ...(sport && { sport }),
+      ...(difficulty && { difficulty }),
+      eventImage: req.file
+        ? req.file.path
+        : existingEvent?.eventImage ||
+          "https://res.cloudinary.com/dwigdvgwe/image/upload/v1709150899/event_it4nmq.jpg",
+    };
 
-    if (date !== "") {
-      updatedFields.date = date;
-    }
+    const updatedEvent = await Event.findByIdAndUpdate(eventId, updatedFields, {
+      new: true,
+    });
 
-    if (sport !== "") {
-      updatedFields.sport = sport;
-    }
-
-    const updatedEvent = await Event.findByIdAndUpdate(
-      eventId,
-      {
-        ...updatedFields,
-        eventImage: req.file
-          ? req.file.path
-          : existingEvent?.eventImage || "/front-meetout/public/event.png",
-      },
-      { new: true }
-    );
     if (!updatedEvent) {
       console.error("Server response is empty or invalid.");
       return res.status(500).json({ message: "Internal Server Error" });
     }
 
     return res.status(200).json(updatedEvent);
-    console.log("UPDATED EVEENT", updatedEvent);
-    return res.status(200).json(updatedEvent);
   } catch (error) {
-    return res.status(400).json({ message: error.message });
+    return next(new HttpError(error));
   }
 };
 

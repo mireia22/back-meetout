@@ -1,4 +1,6 @@
+const { HttpError } = require("../../middlewares/error-middleware");
 const { deleteImgCloudinary } = require("../../middlewares/files-middleware");
+const { isEmailValid } = require("../../utils/validFields");
 const User = require("../models/user-model");
 const bcrypt = require("bcrypt");
 
@@ -7,7 +9,7 @@ const getAllUsers = async (req, res, next) => {
     const allUsers = await User.find().populate("asistedEvents");
     return res.status(200).json(allUsers);
   } catch (error) {
-    return res.status(400).json({ message: error.message });
+    return next(new HttpError(error));
   }
 };
 
@@ -22,7 +24,7 @@ const getUser = async (req, res, next) => {
 
     return res.status(200).json(user);
   } catch (error) {
-    return res.status(400).json({ message: error.message });
+    return next(new HttpError(error));
   }
 };
 
@@ -30,7 +32,9 @@ const editUser = async (req, res, next) => {
   try {
     const { id } = req.user;
     if (req.user._id.toString() !== id) {
-      return res.status(400).json("You can't modify somenone that is not you.");
+      return next(
+        new HttpError("You can't modify someone that is not you.", 400)
+      );
     }
     const { name, email, password } = req.body;
 
@@ -41,32 +45,26 @@ const editUser = async (req, res, next) => {
     if (existingUser?.avatar && req.file) {
       deleteImgCloudinary(existingUser.avatar);
     }
+    if (!isEmailValid(email)) {
+      return next(new HttpError("Invalid email address format.", 400));
+    }
+    const updatedFields = {
+      ...(name && { name }),
+      ...(email && { email }),
+      ...(password && { password: bcrypt.hashSync(password, 10) }),
+      avatar: req.file
+        ? req.file.path
+        : existingUser.avatar ||
+          "https://res.cloudinary.com/dwigdvgwe/image/upload/v1709150661/profile_hxoxnk.webp",
+    };
 
-    const updatedFields = {};
-    if (name !== "") {
-      updatedFields.name = name;
-    }
-    if (email !== "") {
-      updatedFields.email = email;
-    }
-    if (password !== undefined && password !== existingUser.password) {
-      updatedFields.password = bcrypt.hashSync(password, 10);
-    }
-
-    const updatedUser = await User.findByIdAndUpdate(
-      id,
-      {
-        ...updatedFields,
-        avatar: req.file
-          ? req.file.path
-          : existingUser.avatar || "no user avatar",
-      },
-      { new: true }
-    );
+    const updatedUser = await User.findByIdAndUpdate(id, updatedFields, {
+      new: true,
+    });
 
     return res.status(200).json(updatedUser);
   } catch (error) {
-    return res.status(400).json({ message: error.message });
+    return next(new HttpError(error));
   }
 };
 
@@ -80,7 +78,7 @@ const deleteUserById = async (req, res, next) => {
     }
     return res.status(200).json({ message: "User deleted successfully" });
   } catch (error) {
-    return res.status(400).json({ message: error.message });
+    return next(new HttpError(error));
   }
 };
 const deleteAllUsers = async (req, res, next) => {
@@ -94,7 +92,7 @@ const deleteAllUsers = async (req, res, next) => {
     }
     return res.status(200).json({ message: "All users deleted successfully" });
   } catch (error) {
-    return res.status(400).json({ message: error.message });
+    return next(new HttpError(error));
   }
 };
 

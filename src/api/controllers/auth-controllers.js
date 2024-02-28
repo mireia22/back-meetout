@@ -21,7 +21,9 @@ const register = async (req, res, next) => {
       name,
       email,
       password,
-      avatar: req.file ? req.file.path : "/front-meetout/src/assets/avatar.png",
+      avatar: req.file
+        ? req.file.path
+        : "https://res.cloudinary.com/dwigdvgwe/image/upload/v1709150661/profile_hxoxnk.webp",
     });
 
     const savedUser = await newUser.save();
@@ -30,7 +32,7 @@ const register = async (req, res, next) => {
       .status(201)
       .json({ token, message: `New user ${savedUser.email} registered.` });
   } catch (error) {
-    return next(error);
+    return next(new HttpError(error));
   }
 };
 
@@ -57,7 +59,7 @@ const login = async (req, res, next) => {
       return next(new HttpError("Wrong credentials."));
     }
   } catch (error) {
-    return next(error);
+    return next(new HttpError(error));
   }
 };
 
