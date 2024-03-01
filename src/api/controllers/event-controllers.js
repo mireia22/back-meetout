@@ -1,4 +1,7 @@
-const { deleteImgCloudinary } = require("../../middlewares/files-middleware");
+const {
+  deleteImgCloudinary,
+  // eventImage,
+} = require("../../middlewares/files-middleware");
 const User = require("../models/user-model");
 const Event = require("../models/event-model");
 const Asistant = require("../models/asistant-model");
@@ -100,7 +103,7 @@ const postEvent = async (req, res, next) => {
       createdBy: req.user.id,
       eventImage: req.file
         ? req.file.path
-        : "https://res.cloudinary.com/dwigdvgwe/image/upload/v1709150899/event_it4nmq.jpg",
+        : "https://res.cloudinary.com/dwigdvgwe/image/upload/v1709214988/siew1cfva3oksjdsruof.jpg",
     });
 
     const savedEvent = await newEvent.save();

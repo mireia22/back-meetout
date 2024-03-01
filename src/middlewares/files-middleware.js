@@ -2,6 +2,14 @@ const multer = require("multer");
 const cloudinary = require("cloudinary").v2;
 const { CloudinaryStorage } = require("multer-storage-cloudinary");
 
+// const eventImage = cloudinary.uploader.upload("event.jpg", {
+//   folder: "",
+//   resource_type: "image",
+// });
+
+// const eventImage = cloudinary.api
+//   .resources_by_asset_ids("a367daa41eedfd68713ea3065c846057")
+//   .then(console.log);
 const storage = new CloudinaryStorage({
   cloudinary: cloudinary,
   params: {
