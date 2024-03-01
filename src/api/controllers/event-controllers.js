@@ -1,5 +1,6 @@
 const {
   deleteImgCloudinary,
+  defaultCloudinaryImages,
   // eventImage,
 } = require("../../middlewares/files-middleware");
 const User = require("../models/user-model");
@@ -8,6 +9,7 @@ const Asistant = require("../models/asistant-model");
 const { HttpError } = require("../../middlewares/error-middleware");
 const { formatDate } = require("../../utils/formatDates");
 const path = require("path");
+const { isEmailValid } = require("../../utils/validFields");
 
 const getAllEvents = async (req, res, next) => {
   try {
@@ -40,7 +42,7 @@ const getAllEventAsistants = async (req, res, next) => {
     const assistantIds = event?.participants;
 
     if (!assistantIds || assistantIds.length === 0) {
-      return res.status(404).json({ message: "No asistants yet" });
+      return next(new HttpError("No assistants yet", 400));
     }
     const asistants = [];
     for (const assistantId of assistantIds) {
@@ -101,9 +103,7 @@ const postEvent = async (req, res, next) => {
       difficulty,
       sport,
       createdBy: req.user.id,
-      eventImage: req.file
-        ? req.file.path
-        : "https://res.cloudinary.com/dwigdvgwe/image/upload/v1709214988/siew1cfva3oksjdsruof.jpg",
+      eventImage: req.file ? req.file.path : defaultCloudinaryImages.event,
     });
 
     const savedEvent = await newEvent.save();
@@ -140,8 +140,11 @@ const inscribeToEvent = async (req, res, next) => {
         new HttpError("User is already inscribed to this event", 400)
       );
     }
-
-    if (!req.body.email || !req.body.name) {
+    const { email, name } = req.body;
+    if (!isEmailValid(email)) {
+      return next(new HttpError("Invalid email address format.", 400));
+    }
+    if (!email || !name) {
       return next(new HttpError(`Complete all fields.`, 400));
     }
 
@@ -214,8 +217,7 @@ const editEvent = async (req, res, next) => {
       ...(difficulty && { difficulty }),
       eventImage: req.file
         ? req.file.path
-        : existingEvent?.eventImage ||
-          "https://res.cloudinary.com/dwigdvgwe/image/upload/v1709150899/event_it4nmq.jpg",
+        : existingEvent?.eventImage || defaultCloudinaryImages.event,
     };
 
     const updatedEvent = await Event.findByIdAndUpdate(eventId, updatedFields, {

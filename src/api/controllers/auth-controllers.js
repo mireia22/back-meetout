@@ -3,6 +3,9 @@ const User = require("../models/user-model");
 const bcrypt = require("bcrypt");
 const { HttpError } = require("../../middlewares/error-middleware");
 const { isEmailValid } = require("../../utils/validFields");
+const {
+  defaultCloudinaryImages,
+} = require("../../middlewares/files-middleware");
 
 const register = async (req, res, next) => {
   try {
@@ -21,9 +24,7 @@ const register = async (req, res, next) => {
       name,
       email,
       password,
-      avatar: req.file
-        ? req.file.path
-        : "https://res.cloudinary.com/dwigdvgwe/image/upload/v1709150661/profile_hxoxnk.webp",
+      avatar: req.file ? req.file.path : defaultCloudinaryImages.user,
     });
 
     const savedUser = await newUser.save();

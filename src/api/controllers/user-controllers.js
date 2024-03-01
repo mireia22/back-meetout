@@ -1,5 +1,8 @@
 const { HttpError } = require("../../middlewares/error-middleware");
-const { deleteImgCloudinary } = require("../../middlewares/files-middleware");
+const {
+  deleteImgCloudinary,
+  defaultCloudinaryImages,
+} = require("../../middlewares/files-middleware");
 const { isEmailValid } = require("../../utils/validFields");
 const User = require("../models/user-model");
 const bcrypt = require("bcrypt");
@@ -54,8 +57,7 @@ const editUser = async (req, res, next) => {
       ...(password && { password: bcrypt.hashSync(password, 10) }),
       avatar: req.file
         ? req.file.path
-        : existingUser.avatar ||
-          "https://res.cloudinary.com/dwigdvgwe/image/upload/v1709150661/profile_hxoxnk.webp",
+        : existingUser.avatar || defaultCloudinaryImages.user,
     };
 
     const updatedUser = await User.findByIdAndUpdate(id, updatedFields, {
