@@ -41,6 +41,14 @@ const editUser = async (req, res, next) => {
     }
     const { name, email, password } = req.body;
 
+    const userExist = await User.findOne({ $or: [{ email }, { name }] });
+    if (userExist) {
+      if (userExist.email === email) {
+        return next(new HttpError("Email already registered.", 400));
+      } else {
+        return next(new HttpError("Name already registered.", 400));
+      }
+    }
     const existingUser = await User.findById(id);
     if (!existingUser) {
       return res.status(404).json({ message: "User not found" });
