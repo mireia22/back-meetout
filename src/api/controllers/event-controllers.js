@@ -130,6 +130,7 @@ const inscribeToEvent = async (req, res, next) => {
     }
 
     const user = await User.findById(req.user._id);
+
     const event = await Event.findById(eventId);
     if (!user || !event) {
       return next(new HttpError("User or Event not Found", 404));
@@ -165,6 +166,7 @@ const inscribeToEvent = async (req, res, next) => {
     const newAssistant = new Asistant({
       name: req.body.name,
       email: req.body.email,
+      avatar: user.avatar,
     });
     newAssistant.assistedEvents.push(event._id);
 

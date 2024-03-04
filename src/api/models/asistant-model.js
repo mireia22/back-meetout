@@ -4,6 +4,7 @@ const asistantSchema = new mongoose.Schema(
   {
     name: { type: String, trim: true },
     email: { type: String, trim: true },
+    avatar: { type: String, trim: true },
     assistedEvents: [{ type: mongoose.Schema.Types.ObjectId, ref: "event" }],
   },
   {
